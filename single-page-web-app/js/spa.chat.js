@@ -150,9 +150,13 @@ spa.chat = (function () {
             { height: height_px },
             animate_time,
             function () {
+                // Update title of chat slider
                 jqueryMap.$toggle.prop('title', slider_title);
+                // Update tool tip of chat slider minify/maxify icon
                 jqueryMap.$toggle.text(toggle_text);
+                // Update slider position value
                 stateMap.position_type = position_type;
+                
                 if (callback) { callback(jqueryMap.$slider); }
             }
         );

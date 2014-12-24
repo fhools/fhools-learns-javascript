@@ -80,6 +80,8 @@
     overflow-x: hidden;
     overflow-y: scroll;
 }
+
+
 .spa-chat-box {
     position: absolute;
     height: 2em;

@@ -67,42 +67,6 @@ spa.shell = (function () {
         };
     };
     
-    toggleChat = function (do_extend, callback) {
-        var 
-            px_chat_ht = jqueryMap.$chat.height(),
-            is_open = px_chat_ht === configMap.chat_extend_height,
-            is_closed = px_chat_ht === configMap.chat_retract_height,
-            is_sliding = !is_open && !is_closed;
-        
-        if (is_sliding) {
-            return false;
-        }
-        
-        if (do_extend) {
-            jqueryMap.$chat.animate(
-                { height : configMap.chat_extend_height },
-                configMap.chat_extend_time,
-                function () {
-                    jqueryMap.$chat.attr('title', configMap.chat_extended_title);
-                    stateMap.is_chat_retracted = false;
-                    if (callback) { callback(jqueryMap.$chat); }
-                }
-            );
-            return true;
-        }
-        
-        jqueryMap.$chat.animate(
-            { height: configMap.chat_retract_height },
-            configMap.chat_retract_time,
-            function() {
-                jqueryMap.$chat.attr('title', configMap.chat_retracted_title);
-                stateMap.is_chat_retracted = true;
-                if (callback) { callback(jqueryMap.$chat); }
-            }
-        );
-        return true;
-    };
-    
     // changeAnchorPart
     // Args:
     //      arg_map - Map describing what part of the URI anchor we want changed.
@@ -178,8 +142,8 @@ spa.shell = (function () {
         
         if (!anchor_map_previous 
             || _s_chat_previous !== _s_chat_proposed) {
-            s_chat_proposed = anchor_map_proposed.chat;
             
+            s_chat_proposed = anchor_map_proposed.chat;
             switch(_s_chat_proposed) {
                     case 'opened' :
                         is_ok = spa.chat.setSliderPosition('opened');
@@ -208,9 +172,14 @@ spa.shell = (function () {
     }
     
     onResize = function () {
+        
+        // onResize will set timer for 200 milliseconds, this gets checked first thing
+        // to make sure we throttle how many times we call onResize
         if (stateMap.resize_idto) { return true; }
         
         spa.chat.handleResize();
+        // set the resize timer, 200 ms later it will clear itself to handler further resize
+        // events
         stateMap.resize_idto = setTimeout(function () { stateMap.resize_idto = undefined; },
                                           configMap.resize_interval);
         
