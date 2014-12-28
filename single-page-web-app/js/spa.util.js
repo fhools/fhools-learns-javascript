@@ -3,7 +3,7 @@
  * Utilities
 */
 
-/* globals */
+/*globals $, spa */
 
 spa.util = (function () {
     var makeError, setConfigMap;
@@ -26,6 +26,9 @@ spa.util = (function () {
             config_map = arg_map.config_map,
             key_name, error;
         
+        // Iterate through keys in input_map, if they are settable, set them in the config_map.
+        // config_map is a reference to user supplied configMap, so the settings will persist
+        // across function call
         for (key_name in input_map) {
             if (input_map.hasOwnProperty(key_name)) {
                 if (settable_map.hasOwnProperty(key_name)) {

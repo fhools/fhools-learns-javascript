@@ -6,6 +6,7 @@
 /* global $, spa */
 
 spa.shell = (function () {
+    'use strict';
     // ----------------- Begin Module Scope Variables ----------------------------
     var
         configMap = {
@@ -17,9 +18,11 @@ spa.shell = (function () {
             // HTML for main SPA shell layout
             main_html : String()
                 + '<div class="spa-shell-head">'
-                    + '<div class="spa-shell-head-logo"></div>'
+                    + '<div class="spa-shell-head-logo">'
+                        + '<h1>SPA</h1>'
+                        + '<p>javascript end to end</p>'
+                    + '</div>'
                     + '<div class="spa-shell-head-acct"></div>'
-                    + '<div class="spa-shell-head-search"></div>'
                 + '</div>'
                 + '<div class="spa-shell-main">'
                     + '<div class="spa-shell-main-nav"></div>'
@@ -46,6 +49,7 @@ spa.shell = (function () {
         jqueryMap = {},
         
         copyAnchorMap, changeAnchorPart, onHashchange,
+        onTapAcct, onLogin, onLogout,
         setJqueryMap, setChatAnchor, onClickChat, onResize, initModule;
     
     // ----------------- End Module Scope Variables ------------------------------
@@ -64,9 +68,33 @@ spa.shell = (function () {
         var $container = stateMap.$container;
         jqueryMap = { 
             $container : $container,
+            $acct : $container.find('.spa-shell-head-acct'),
+            $nav : $container.find('.spa-shell-main-nav')
         };
     };
     
+    onTapAcct = function (event) {
+        var acct_text, user_name, user = spa.model.people.get_user();
+        
+        if (user.get_is_anon()) {
+            user_name = prompt('Please sign-in');
+            if (user_name) {
+                spa.model.people.login(user_name);
+                jqueryMap.$acct.text('...processing...');
+            }
+        } else {
+            spa.model.people.logout();
+        }
+        return false;
+    };
+    
+    onLogin = function (event, login_user) {
+        jqueryMap.$acct.text(login_user.name);
+    };
+    
+    onLogout = function (event, logout_user) {
+        jqueryMap.$acct.text('Please sign-in');
+    };
     // changeAnchorPart
     // Args:
     //      arg_map - Map describing what part of the URI anchor we want changed.
@@ -211,11 +239,17 @@ spa.shell = (function () {
         });
         
         spa.chat.initModule(jqueryMap.$container);
-        
+      
+        $.gevent.subscribe($container, 'spa-login', onLogin);
+        $.gevent.subscribe($container, 'spa-logout', onLogout);
         $(window)
             .bind('hashchange', onHashchange)
             .bind('resize', onResize)
             .trigger('hashchange');
+        
+        jqueryMap.$acct
+            .text('Please sign-in')
+            .bind('utap', onTapAcct);
     };
     
     return { initModule : initModule };
