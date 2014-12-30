@@ -235,11 +235,17 @@ spa.shell = (function () {
         spa.chat.configModule({
             set_chat_anchor : setChatAnchor,
             chat_model : spa.model.chat,
-            people_model : spa.model.people_model
+            people_model : spa.model.people
         });
         
         spa.chat.initModule(jqueryMap.$container);
       
+        spa.avatar.configModule({
+            chat_model : spa.model.chat,
+            people_model : spa.model.people
+        });
+        
+        spa.avatar.initModule(jqueryMap.$nav);
         $.gevent.subscribe($container, 'spa-login', onLogin);
         $.gevent.subscribe($container, 'spa-logout', onLogout);
         $(window)
