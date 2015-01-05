@@ -10,7 +10,8 @@ var
     errorHandler = require('errorhandler'),
     methodOveride = require('method-override'),
     servStatic = require('serve-static'),
-    bodyText = 'Hello Connect';
+    bodyText = 'Hello Connect',
+    routes = require('./routes');
 
 app = express();
 server = http.createServer(app);
@@ -21,9 +22,7 @@ app.use(bodyParser.urlencoded({ extended : true }));
 app.use(methodOveride());
 app.use(servStatic('public'));
 
-app.get('/', function (request, response) {
-    response.send('Hello Express');
-});
+routes.configRoutes(app, server);
 
 server.listen(3000);
 
