@@ -9,7 +9,9 @@
         "errorhandler" : "1.3.x",
         "method-override" : "2.3.x",
         "multer" : "0.1.x",
-        "serve-static" : "*"
+        "serve-static" : "*",
+        "mongodb" : "1.x",
+        "JSV" : "4.x"
     }
 }
     
